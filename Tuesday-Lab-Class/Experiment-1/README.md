@@ -6,40 +6,61 @@ Introduction to DevOps and MLOps: Understand the basic principles, differences, 
 
 ## Theory
 
-DevOps and MLOps are new software engineering paradigms that seek to automate the development, deployment, and management of applications and machine learning models respectively.
+Today's software development and machine learning practices demand efficient processes, inter-team collaboration, and automation to manage complex systems effectively. Two practices that have emerged to address these demands are DevOps and MLOps.
 
-### DevOps?
+### DevOps
 
-DevOps is an amalgamation of Development (Dev) and Operations (Ops). It fosters a culture of collaboration between software developers and IT operations staff. The primary objective is to provide software more quickly, with increased quality, and with more reliability.
+DevOps is a technical and cultural movement that closes the gap between software development and IT operations. Historically, both teams operated in silos, which resulted in slow delivery, unreliable environments, and deployment failures. DevOps strives to dismantle these silos by encouraging cooperation, continuous feedback, and end-to-end automation.
 
-Key principles of DevOps:
+_Major Objectives of DevOps:_
 
-- Continuous Integration (CI)
-- Continuous Delivery/Deployment (CD)
-- Infrastructure as Code (IaC)
-- Monitoring and Logging
-- Automation
+- **Faster Deployment**: Build, testing, and release automation to ship features quickly.
+- **Better Quality**: Regular testing and monitoring to identify problems early.
+- **Scalability**: Infrastructure as Code (IaC) and containerization enable scaling applications with ease.
+- **Reliability**: Continuous monitoring keeps systems stable and responsive.
 
-### What is MLOps?
+_DevOps Lifecycle:_
 
-MLOps, or Machine Learning Operations, applies DevOps practices to the machine learning lifecycle. It speaks to the novel challenges of deploying and operating machine learning models in production, including:
+- **Plan**: Determine features, objectives, and project scope.
+- **Develop**: Writing and managing application code.
+- **Build**: Compile code and create executable artifacts.
+- **Test**: Automated and manual testing for assurance of quality.
+- **Release**: Deployment to production environments.
+- **Operate**: Monitoring and upkeep of systems in real-time.
+- **Monitor**: Gathering data, logs, and performance metrics.
 
-- Data versioning
-- Model training and retraining
-- Model deployment
-- Model monitoring and drift detection
+These tools such as _Git_, _Jenkins_, _Docker_, _Kubernetes_, and _Ansible_ are commonly utilized in DevOps pipelines.
 
-MLOps provides reproducibility, scalability, and governance for ML workflows.
+### MLOps
 
-#### Lifecycle Comparison
+MLOps refers to the application of DevOps practices to machine learning systems. Although sharing similar philosophy, MLOps mitigates special issues that emerge owing to the data-driven and experimentation-based nature of ML development.
 
-| Phase      | DevOps                       | MLOps                                     |
-| ---------- | ---------------------------- | ----------------------------------------- |
-| Code       | Source code for applications | Source code + data pipelines + model code |
-| Build/Test | Unit & integration testing   | Model training, validation, testing       |
-| Deploy     | Web/App deployment           | Model serving/deployment                  |
-| Monitor    | App performance & uptime     | Model accuracy, drift, performance        |
-| Maintain   | Code fixes, infra updates    | Retraining, dataset updates               |
+Machine learning models are not simply code—they depend significantly on data, model training, and performance testing. In contrast to standard software, ML models can get worse over time due to changing data distributions (referred to as model drift). MLOps practices seek to ensure models are versioned, tested, deployed, and monitored regularly.
+
+_MLOps Lifecycle:_
+
+- **Data Collection & Preparation**: Collecting and cleaning data sets.
+- **Model Development**: Developing and testing ML models.
+- **Model Training**: Training the model with data.
+- **Model Evaluation**: Performance validation through metrics (accuracy, precision, etc.).
+- **Model Deployment**: Deploying the model through APIs or integrating it into apps.
+- **Model Monitoring**: Monitoring predictions, performance, and drift.
+- **Model Retraining**: Periodically updating the model with new data.
+
+Some of the popular MLOps tools are _MLflow_, _Kubeflow_, _TensorFlow Extended (TFX)_, _DVC (Data Version Control)_, and _Seldon Core_.
+
+#### Differences
+
+| Category    | DevOps                               | MLOps                                                    |
+| ----------- | ------------------------------------ | -------------------------------------------------------- |
+| Main Focus  | Application development and delivery | Managing the ML lifecycle and model operations           |
+| Artifacts   | Application code                     | Code, datasets, trained models, and metrics              |
+| Automation  | Build, test, deploy                  | Data pipeline automation, training, and model deployment |
+| Testing     | Unit & integration tests             | Data validation, model validation, performance tests     |
+| Monitoring  | System performance, errors           | Model accuracy, prediction quality, drift detection      |
+| Reusability | High (same code runs consistently)   | Harder (data changes may require retraining)             |
+
+MLOps can be considered a superset of DevOps with additional complexity due to the involvement of large datasets, model behavior, and continuous evaluation needs.
 
 ## Conclusion
 
