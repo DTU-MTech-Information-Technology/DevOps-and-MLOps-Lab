@@ -49,7 +49,7 @@ _MLOps Lifecycle:_
 
 Some of the popular MLOps tools are _MLflow_, _Kubeflow_, _TensorFlow Extended (TFX)_, _DVC (Data Version Control)_, and _Seldon Core_.
 
-#### Differences
+### Differences
 
 | Category    | DevOps                               | MLOps                                                    |
 | ----------- | ------------------------------------ | -------------------------------------------------------- |
