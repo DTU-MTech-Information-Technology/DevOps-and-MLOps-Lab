@@ -64,15 +64,19 @@ git pull origin main
 ## Outputs
 
 ![](./outputs/1.png)
+
 _Creating a Local Repository_
 
 ![](./outputs/2.png)
+
 _Making a commit_
 
 ![](./outputs/3.png)
+
 _Pushing to GitHub_
 
 ![](./outputs/4.png)
+
 _Pulling changes_
 
 ## Conclusion
