@@ -35,7 +35,7 @@ def echo():
     return jsonify({"headers": dict(request.headers)})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000)
+    app.run(host='0.0.0.0', port=9000)
 ```
 
 _requirements.txt_
@@ -55,7 +55,7 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-EXPOSE 6000
+EXPOSE 9000
 
 CMD ["python", "app.py"]
 ```
@@ -69,7 +69,7 @@ docker build -t flask-echo-headers-server .
 ### Running Docker Container
 
 ```sh
-docker run -p 6000:6000 flask-echo-headers-server
+docker run -p 9000:9000 flask-echo-headers-server
 ```
 
 ### Pushing to Registry
