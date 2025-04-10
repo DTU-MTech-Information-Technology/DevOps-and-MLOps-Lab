@@ -2,7 +2,11 @@
 
 ## Aim
 
-ecrets management refers to the process of securely storing, accessing, and controlling the distribution of sensitive data (e.g., passwords, API keys, certificates). It's a crucial aspect of maintaining security and ensuring that only authorized users or systems have access to this data. Secrets management is especially important in modern application deployments, where automated CI/CD pipelines, containerization, and cloud services are commonplace.
+Secrets Management with HashiCorp Vault: Securely store and access secrets like API keys and credentials using Vault and integrate it into your deployment pipeline.
+
+## Theory
+
+Secrets management refers to the process of securely storing, accessing, and controlling the distribution of sensitive data (e.g., passwords, API keys, certificates). It's a crucial aspect of maintaining security and ensuring that only authorized users or systems have access to this data. Secrets management is especially important in modern application deployments, where automated CI/CD pipelines, containerization, and cloud services are commonplace.
 
 With the rise of microservices, distributed systems, and DevOps practices, traditional methods of managing secrets (e.g., hardcoding credentials in code or using environment variables) are no longer secure or scalable. In response, solutions like HashiCorp Vault have emerged to provide a centralized, secure way to manage secrets.
 
