@@ -121,3 +121,10 @@ _Rolling deployments_
 _Minikube dashboard_
 
 ## Conclusion
+
+In this lab, we stepped into the world of container orchestration with Kubernetes. We learned how to:
+
+- Create and manage pods using deployments
+- Expose our app using services
+- Perform rolling updates for smooth, zero-downtime deployments
+- Scale applications with just one command
