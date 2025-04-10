@@ -1,0 +1,262 @@
+# PIPELINE DEFINITION
+# Name: heart-disease-pipeline
+# Description: Heart Disease Prediction Pipeline
+components:
+  comp-download-data:
+    executorLabel: exec-download-data
+    outputDefinitions:
+      artifacts:
+        output_dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+  comp-evaluate-model:
+    executorLabel: exec-evaluate-model
+    inputDefinitions:
+      artifacts:
+        model_input:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        preprocessed_dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+  comp-preprocess-data:
+    executorLabel: exec-preprocess-data
+    inputDefinitions:
+      artifacts:
+        input_dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        output_dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+  comp-train-model:
+    executorLabel: exec-train-model
+    inputDefinitions:
+      artifacts:
+        preprocessed_dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        model_output:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+deploymentSpec:
+  executors:
+    exec-download-data:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - download_data
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' &&\
+          \ \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef download_data(output_dataset: Output[Dataset]):\n    import os\n\
+          \    import pandas as pd\n    url = \"https://raw.githubusercontent.com/sharmaroshan/Heart-UCI-Dataset/refs/heads/master/heart.csv\"\
+          \n    df = pd.read_csv(url)\n    # \u2705 Create the directory if it doesn't\
+          \ exist\n    os.makedirs(output_dataset.path, exist_ok=True)\n\n    # \u2705\
+          \ Save the CSV file\n    df.to_csv(os.path.join(output_dataset.path, \"\
+          heart.csv\"), index=False)\n\n"
+        image: python:3.9
+    exec-evaluate-model:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - evaluate_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ 'joblib' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef evaluate_model(preprocessed_dataset: Input[Dataset], model_input:\
+          \ Input[Model]):\n    import pandas as pd\n    import joblib\n    from sklearn.metrics\
+          \ import classification_report\n\n    df = pd.read_csv(preprocessed_dataset.path\
+          \ + \"/test.csv\")\n    X_test = df.drop(\"target\", axis=1)\n    y_test\
+          \ = df[\"target\"]\n\n    model = joblib.load(model_input.path + \"/model.joblib\"\
+          )\n    y_pred = model.predict(X_test)\n\n    report = classification_report(y_test,\
+          \ y_pred)\n    print(\"Classification Report:\\n\", report)\n\n"
+        image: python:3.9
+    exec-preprocess-data:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - preprocess_data
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef preprocess_data(input_dataset: Input[Dataset], output_dataset:\
+          \ Output[Dataset]):\n    import pandas as pd\n    from sklearn.model_selection\
+          \ import train_test_split\n    import os\n\n    df = pd.read_csv(input_dataset.path\
+          \ + \"/heart.csv\")\n    X = df.drop(\"target\", axis=1)\n    y = df[\"\
+          target\"]\n    X_train, X_test, y_train, y_test = train_test_split(X, y,\
+          \ test_size=0.2, random_state=42)\n\n    train_df = X_train.copy()\n   \
+          \ train_df[\"target\"] = y_train\n    test_df = X_test.copy()\n    test_df[\"\
+          target\"] = y_test\n\n    os.makedirs(output_dataset.path, exist_ok=True)\n\
+          \n    train_df.to_csv(output_dataset.path + \"/train.csv\", index=False)\n\
+          \    test_df.to_csv(output_dataset.path + \"/test.csv\", index=False)\n\n"
+        image: python:3.9
+    exec-train-model:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ 'joblib' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_model(preprocessed_dataset: Input[Dataset], model_output:\
+          \ Output[Model]):\n    import pandas as pd\n    from sklearn.linear_model\
+          \ import LogisticRegression\n    import joblib\n    import os\n\n    df\
+          \ = pd.read_csv(preprocessed_dataset.path + \"/train.csv\")\n    X_train\
+          \ = df.drop(\"target\", axis=1)\n    y_train = df[\"target\"]\n\n    model\
+          \ = LogisticRegression(max_iter=1000)\n    model.fit(X_train, y_train)\n\
+          \n    os.makedirs(model_output.path, exist_ok=True)\n\n    joblib.dump(model,\
+          \ model_output.path + \"/model.joblib\")\n\n"
+        image: python:3.9
+pipelineInfo:
+  description: Heart Disease Prediction Pipeline
+  name: heart-disease-pipeline
+root:
+  dag:
+    tasks:
+      download-data:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-download-data
+        taskInfo:
+          name: download-data
+      evaluate-model:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-evaluate-model
+        dependentTasks:
+        - preprocess-data
+        - train-model
+        inputs:
+          artifacts:
+            model_input:
+              taskOutputArtifact:
+                outputArtifactKey: model_output
+                producerTask: train-model
+            preprocessed_dataset:
+              taskOutputArtifact:
+                outputArtifactKey: output_dataset
+                producerTask: preprocess-data
+        taskInfo:
+          name: evaluate-model
+      preprocess-data:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-preprocess-data
+        dependentTasks:
+        - download-data
+        inputs:
+          artifacts:
+            input_dataset:
+              taskOutputArtifact:
+                outputArtifactKey: output_dataset
+                producerTask: download-data
+        taskInfo:
+          name: preprocess-data
+      train-model:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-model
+        dependentTasks:
+        - preprocess-data
+        inputs:
+          artifacts:
+            preprocessed_dataset:
+              taskOutputArtifact:
+                outputArtifactKey: output_dataset
+                producerTask: preprocess-data
+        taskInfo:
+          name: train-model
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.12.1
