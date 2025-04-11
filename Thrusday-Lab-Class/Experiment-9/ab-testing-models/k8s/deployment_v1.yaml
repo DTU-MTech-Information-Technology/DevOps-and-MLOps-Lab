@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-model-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iris
+      version: a
+  template:
+    metadata:
+      labels:
+        app: iris
+        version: a
+    spec:
+      containers:
+        - name: iris
+          image: model-a:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9000

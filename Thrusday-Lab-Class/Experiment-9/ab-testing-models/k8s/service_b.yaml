@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-b-service
+spec:
+  selector:
+    app: iris
+    version: b
+  ports:
+    - port: 80
+      targetPort: 9000
