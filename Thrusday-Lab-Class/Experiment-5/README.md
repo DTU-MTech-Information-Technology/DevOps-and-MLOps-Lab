@@ -24,6 +24,15 @@ When combined with Optuna, MLflow can log the hyperparameter configurations and 
 
 ## Experiment
 
+### Setup MLflow
+
+```sh
+pip install mlflow
+mlflow ui
+```
+
+### ML Experiment
+
 ```python
 from sklearn.datasets import load_iris
 import pandas as pd
